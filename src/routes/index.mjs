@@ -4,7 +4,7 @@ import cartsRouter from "./carts.routes.mjs";
 import sessionRouter from "./sessions.routes.mjs";
 import emailRouter from "./email.routes.mjs";
 import mocksRouter from "./mock.routes.mjs";
-import usersRouter from "./user.routes.mjs";
+import usersRouter from "./users.routes.mjs";
 
 const router = Router();
 

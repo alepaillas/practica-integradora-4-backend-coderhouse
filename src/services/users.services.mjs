@@ -8,6 +8,13 @@ import { generateToken, verifyToken } from "../utils/jwt.mjs";
 
 const JWT_PRIVATE_KEY = envConfig.JWT_PRIVATE_KEY;
 
+const getAll = async () => {
+  const users = await usersRepository.getAll();
+  if (!users || users.length === 0)
+    throw customErrors.notFoundError("No users found.");
+  return users;
+};
+
 const getByEmail = async (email) => {
   const userData = await usersRepository.getByEmail(email);
   if (!userData) {
@@ -86,11 +93,32 @@ const updatePassword = async (email, newPassword) => {
 const changeUserRole = async (uid) => {
   const user = await usersRepository.getById(uid);
   if (!user) throw customErrors.notFoundError("User not found");
+
+  if (user.role === "user" && user.documents.length < 3) {
+    throw customErrors.badRequestError(
+      "Please upload all 3 required documents first.",
+    );
+  }
+
   const userRole = user.role === "premium" ? "user" : "premium";
   return await usersRepository.update(uid, { role: userRole });
 };
 
+const addDocuments = async (uid, reqFiles) => {
+  const files = reqFiles.document;
+  const userDocuments = files.map((file) => {
+    return {
+      name: file.filename,
+      reference: file.path,
+    };
+  });
+  const user = await usersRepository.update(uid, { documents: userDocuments });
+  if (!user) throw customErrors.notFoundError(`User with ID: ${uid} not found`);
+  return user;
+};
+
 export default {
+  getAll,
   getByEmail,
   createUser,
   createMockUsers,
@@ -98,4 +126,5 @@ export default {
   verifyPasswordResetToken,
   updatePassword,
   changeUserRole,
+  addDocuments,
 };

@@ -1,0 +1,18 @@
+meta {
+  name: POST-login-premium
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/session/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "contacto@alepaillas.com",
+    "password": "123456"
+  }
+}

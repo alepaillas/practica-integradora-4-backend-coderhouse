@@ -1,0 +1,22 @@
+meta {
+  name: POST-upload-file
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/users/:uid/documents
+  body: multipartForm
+  auth: none
+}
+
+params:path {
+  uid: 666e0b48a2908a5d5eb3d11a
+}
+
+body:multipart-form {
+  document: @file(/home/mulmeyun/Downloads/19520810_CECA_005_RESIZED_L-1-1310x935.jpg.webp)
+  profile: @file(/home/mulmeyun/Downloads/20043235-5_20240710165022_04ff62f0-e869-445a-8cfc-93c1be7c7d84.jpg)
+  document: @file(/home/mulmeyun/Downloads/ARTE DE DESPLAZAMIENTO ch-1.pdf)
+  document: @file(/home/mulmeyun/Downloads/AXIOMAS CC.pptx)
+}

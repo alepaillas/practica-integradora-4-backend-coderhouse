@@ -18,6 +18,8 @@ const usersSchema = new mongoose.Schema({
     enum: ["user", "admin", "premium"],
     default: "user",
   },
+  documents: [{ name: String, reference: String }],
+  last_connection: Date,
 });
 
 usersSchema.plugin(mongoosePaginate);

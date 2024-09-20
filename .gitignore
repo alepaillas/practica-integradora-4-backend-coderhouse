@@ -133,3 +133,6 @@ dist
 
 # Tailwind
 src/public/css/output.css
+
+# Uploads
+src/public/uploads

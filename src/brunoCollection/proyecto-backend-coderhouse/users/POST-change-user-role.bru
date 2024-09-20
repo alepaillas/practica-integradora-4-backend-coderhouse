@@ -1,0 +1,15 @@
+meta {
+  name: POST-change-user-role
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/users/premium/:uid
+  body: none
+  auth: none
+}
+
+params:path {
+  uid: 666e0b48a2908a5d5eb3d11a
+}

@@ -1,0 +1,18 @@
+meta {
+  name: POST-login-user
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/session/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "luna@celebracioneslunita.com",
+    "password": "123456"
+  }
+}
