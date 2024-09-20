@@ -43,7 +43,7 @@ router.get(
   sessionsControllers.current,
 );
 
-router.get("/logout", sessionsControllers.logout);
+router.post("/logout", sessionsControllers.logout);
 
 router.get(
   "/generatePasswordResetToken",

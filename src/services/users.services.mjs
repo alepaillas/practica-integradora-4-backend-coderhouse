@@ -117,6 +117,28 @@ const addDocuments = async (uid, reqFiles) => {
   return user;
 };
 
+const getCurrentTime = () => new Date().toUTCString();
+const updateLastConnection = async ({ uid, email } = {}) => {
+  let userId = uid;
+
+  if (!uid && email) {
+    const user = await usersRepository.getByEmail(email);
+    if (!user) throw customErrors.notFoundError("User not found");
+    userId = user._id;
+  }
+
+  if (!userId)
+    throw customErrors.badRequestError("Either uid or email must be provided");
+
+  const updatedUser = await usersRepository.update(userId, {
+    last_connection: getCurrentTime(),
+  });
+
+  if (!updatedUser) throw customErrors.notFoundError("User not found");
+
+  return updatedUser;
+};
+
 export default {
   getAll,
   getByEmail,
@@ -127,4 +149,5 @@ export default {
   updatePassword,
   changeUserRole,
   addDocuments,
+  updateLastConnection,
 };

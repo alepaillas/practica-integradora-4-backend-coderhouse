@@ -6,6 +6,7 @@ import { createHash, isValidPassword } from "../utils/bcrypt.mjs";
 import envConfig from "./env.config.mjs";
 import userRepository from "../persistences/mongo/repositories/users.repository.mjs";
 import cartsRepository from "../persistences/mongo/repositories/carts.repository.mjs";
+import usersServices from "../services/users.services.mjs";
 
 const JWT_PRIVATE_KEY = envConfig.JWT_PRIVATE_KEY;
 const COOKIE_TOKEN = envConfig.COOKIE_TOKEN;
@@ -77,14 +78,17 @@ const initializePassport = () => {
           if (!user || !isValidPassword(user, password)) {
             return done(null, false, { message: "Invalid email or password" });
           }
-          return done(null, user); // User found and authenticated
+
+          const updatedLastConnection =
+            await usersServices.updateLastConnection({ uid: user._id });
+
+          return done(null, updatedLastConnection); // User found and authenticated
         } catch (error) {
           return done(error); // Pass the error to Passport
         }
       },
     ),
   );
-
   passport.use(
     "github",
     new GitHubStrategy(
@@ -109,7 +113,8 @@ const initializePassport = () => {
             );
           }
 
-          const user = await userRepository.getByEmail(email);
+          let user = await userRepository.getByEmail(email);
+
           if (!user) {
             const newUser = {
               first_name: profile._json.name,
@@ -118,13 +123,17 @@ const initializePassport = () => {
               age: "",
               password: "",
             };
-            const result = await userRepository.create(newUser);
-            return done(null, result);
-          } else {
-            return done(null, user); // User found and authenticated
+            user = await userRepository.create(newUser);
           }
+
+          // Update last connection time
+          const updatedUser = await usersServices.updateLastConnection({
+            uid: user._id,
+          });
+
+          return done(null, updatedUser);
         } catch (error) {
-          return done(error); // Pass the error to Passport
+          return done(error);
         }
       },
     ),

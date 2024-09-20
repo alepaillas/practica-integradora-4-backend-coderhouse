@@ -4,6 +4,7 @@ import { jwtResponseDto } from "../dto/jwtResponse.dto.mjs";
 import usersRepository from "../persistences/mongo/repositories/users.repository.mjs";
 import { createHash } from "../utils/bcrypt.mjs";
 import customErrors from "../errors/customErrors.mjs";
+import usersServices from "./users.services.mjs";
 
 /* const register = async (userData) => {
   const { email, first_name, last_name, age, password } = userData;
@@ -56,6 +57,9 @@ const loginGithub = async (user) => {
 };
 
 const logout = async (session) => {
+  if (session.user) {
+    await usersServices.updateLastConnection({ email: session.user.email });
+  }
   session.destroy();
 };
 
